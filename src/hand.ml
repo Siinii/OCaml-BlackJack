@@ -1,4 +1,4 @@
-include Types
+open Types
 
 exception Empty
 
