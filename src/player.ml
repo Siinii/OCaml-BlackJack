@@ -36,14 +36,14 @@ let value_of_card_player (c : card) =
 let rec player_value hand =
   match hand with
   | [] -> 0
-  | h :: t -> value_of_card_player h + player_value t
+  | h :: t -> value_of_card_player (h : card) + player_value t
 
 let is_busted (hand : card list) =
   if player_value hand > 21 then true else false
 
 let rec hit hd =
   match hd with
-  | [] -> if is_busted hd = false then hd else raise Empty
+  | [] -> hd
   | h :: t ->
       if is_busted hd = false && currentState = PLAYING then
         Hand.hit h hd
