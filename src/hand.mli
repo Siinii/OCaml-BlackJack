@@ -15,5 +15,6 @@ val hand_value : card list -> int
 val hand_value : card list -> int
 
 val to_list : card list -> card list
+(* val val_to_string : value -> string *)
 
-val val_to_string : Types.value -> string
+(* val hand_string : value -> string *)

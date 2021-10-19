@@ -1,11 +1,6 @@
 open Types
 
 exception Empty
-(* type card = Types.card
-
-   type value = Types.value
-
-   type suit = Types.suit *)
 
 let empty = []
 
@@ -29,26 +24,15 @@ let rec hand_value hand =
 
 let to_list = Fun.id
 
-let val_to_string value =
-  match value with
-  | Ace -> "Ace"
-  | King -> "King"
-  | Queen -> "Queen"
-  | Jack -> "Jack"
-  | Number x -> string_of_int x
+(* let val_to_string value = match value with | Ace -> "Ace" | King ->
+   "King" | Queen -> "Queen" | Jack -> "Jack" | Number x ->
+   string_of_int x
 
-let suit_to_string suit =
-  match suit with
-  | Hearts -> "Hearts"
-  | Diamonds -> "Diamonds"
-  | Spades -> "Spades"
-  | Clubs -> "Clubs"
+   let suit_to_string suit = match suit with | Hearts -> "Hearts" |
+   Diamonds -> "Diamonds" | Spades -> "Spades" | Clubs -> "Clubs"
 
-let card_to_string card =
-  match card with
-  | { valu; suit } -> val_to_string valu ^ "of" ^ suit_to_string suit
+   let card_to_string card = match card with | { valu; suit } ->
+   val_to_string valu ^ "of" ^ suit_to_string suit *)
 
-let rec hand_to_string (hand : card list) =
-  match hand with
-  | [] -> ""
-  | h :: t -> card_to_string h ^ " , " ^ hand_to_string t
+(* let rec hand_string (hand : card list) = match hand with | [] -> "" |
+   h :: t -> card_to_string h ^ " , " ^ hand_string t *)
