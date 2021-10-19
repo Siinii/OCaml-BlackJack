@@ -1,8 +1,7 @@
 open Types
 
 exception Empty
-
-(**type card = Types.card
+(* type card = Types.card
 
    type value = Types.value
 
@@ -37,3 +36,19 @@ let val_to_string value =
   | Queen -> "Queen"
   | Jack -> "Jack"
   | Number x -> string_of_int x
+
+let suit_to_string suit =
+  match suit with
+  | Hearts -> "Hearts"
+  | Diamonds -> "Diamonds"
+  | Spades -> "Spades"
+  | Clubs -> "Clubs"
+
+let card_to_string card =
+  match card with
+  | { valu; suit } -> val_to_string valu ^ "of" ^ suit_to_string suit
+
+let rec hand_to_string (hand : card list) =
+  match hand with
+  | [] -> ""
+  | h :: t -> card_to_string h ^ " , " ^ hand_to_string t
