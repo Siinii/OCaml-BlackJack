@@ -1,12 +1,12 @@
-include Types
+open Types
 
 exception Empty
 
-type card = Types.card
+(**type card = Types.card
 
-type value = Types.value
+   type value = Types.value
 
-type suit = Types.suit
+   type suit = Types.suit *)
 
 let empty = []
 
