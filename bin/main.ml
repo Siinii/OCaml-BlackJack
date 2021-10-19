@@ -8,7 +8,7 @@ let main () =
   print_endline "Please enter your name.\n";
   print_string "> ";
   match read_line () with
-  | name -> play_game name
+  | text -> play_game text
 
 (* Execute the game engine. *)
 let () = main ()
