@@ -57,3 +57,16 @@ let rec shuffle (deck : card list) =
   let rand_deck = List.map (fun c -> (Random.bits (), c)) deck in
   let snd_deck = List.sort compare rand_deck in
   List.map snd snd_deck
+
+let card_in_deck (hand : card) (lst : card list) =
+  if List.mem hand lst then true else false
+
+let remove_card (card : card) (deck : card list) =
+  match deck with
+  | [] -> []
+  | h :: t -> if h = card then t else h :: t
+
+let deck_no_hand hand deck =
+  match hand with
+  | [] -> empty
+  | h :: t -> if card_in_deck h deck then remove_card h deck else deck

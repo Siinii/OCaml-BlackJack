@@ -23,6 +23,8 @@ let give_cards =
   let hand = [ card_one; card_two ] in
   hand
 
+let hit_card hand = Hand.hit (Deck.deal_card hand)
+
 (* REMOVE LATER *)
 let val_to_string value =
   match value with
@@ -58,4 +60,13 @@ let parse str =
   | "stand" -> Stand
   | _ -> raise NotCommand
 
+let use_command str =
+  let command = parse str in
+  match command with
+  | Hit ->
+      let () = print_endline "You lose" in
+      ()
+  | Stand ->
+      let () = print_endline "You win" in
+      ()
 (* let make_move move = match move with | [] -> *)

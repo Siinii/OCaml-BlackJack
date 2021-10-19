@@ -21,3 +21,5 @@ val to_list : card list -> card list
 val create_deck : card list
 
 val shuffle : card list -> card list
+
+val deck_no_hand : card list -> card list -> card list
