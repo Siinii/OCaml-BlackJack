@@ -60,13 +60,32 @@ let parse str =
   | "stand" -> Stand
   | _ -> raise NotCommand
 
-let use_command str =
+let use_command str (cards : card list) =
   let command = parse str in
   match command with
   | Hit ->
-      let () = print_endline "You lose" in
-      ()
+      let new_cards =
+        Deck.add_card
+          (deal_card (shuffle (deck_no_hand cards create_deck)))
+          cards
+      in
+      if hand_value new_cards > 21 then
+        let () =
+          print_endline (hand_string new_cards);
+          print_endline "You lose!"
+        in
+        ()
+      else
+        let () =
+          print_endline (hand_string new_cards);
+          print_endline "You are alive!"
+        in
+        ()
   | Stand ->
-      let () = print_endline "You win" in
+      let () =
+        print_endline
+          ("Your value is: " ^ string_of_int (hand_value cards));
+        print_endline "You win"
+      in
       ()
 (* let make_move move = match move with | [] -> *)

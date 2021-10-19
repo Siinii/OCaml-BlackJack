@@ -8,7 +8,8 @@ let play_game f =
   print_endline ("Your hand is: " ^ hand_string give_cards);
   ANSITerminal.print_string [ ANSITerminal.white ]
     "Do you want to hit (h) or stand (s)?";
-  print_endline "You win"
+  match read_line () with
+  | hit -> use_command hit give_cards
 
 (** [main ()] prompts for the game to play, then starts it. *)
 let main () =
