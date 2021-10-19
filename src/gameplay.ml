@@ -1,6 +1,7 @@
 open Deck
 open Hand
 open Types
+open Player
 
 type input_phrase = string list
 
@@ -60,7 +61,7 @@ let parse str =
   | "stand" -> Stand
   | _ -> raise NotCommand
 
-let use_command str (cards : card list) =
+let rec use_command str (cards : card list) =
   let command = parse str in
   match command with
   | Hit ->
@@ -78,8 +79,11 @@ let use_command str (cards : card list) =
       else
         let () =
           print_endline (hand_string new_cards);
-          print_endline "You are alive!"
+          print_endline "Do you want to hit (h) or stand (s)?";
+          match read_line () with
+          | hit -> use_command hit new_cards
         in
+
         ()
   | Stand ->
       let () =
