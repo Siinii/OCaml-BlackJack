@@ -16,9 +16,7 @@ let main () =
   print_string "> ";
 
   match read_line () with
-  | name ->
-      let () = print_int (Random.bits ()) in
-      play_game name
+  | name -> play_game name
 
 (* Execute the game engine. *)
 let () = main ()
