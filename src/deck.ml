@@ -50,6 +50,8 @@ let create_deck =
     (List.map create_suit_vals [ Hearts; Spades; Clubs; Diamonds ])
 
 (* Must be redone *)
+let rand_int inte = Random.int inte
+
 let rec shuffle (deck : card list) =
   let rand_deck = List.map (fun c -> (Random.bits (), c)) deck in
   let snd_deck = List.sort compare rand_deck in
