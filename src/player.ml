@@ -38,12 +38,13 @@ let rec player_value hand =
   | [] -> 0
   | h :: t -> value_of_card_player h + player_value t
 
-let is_busted hand = if player_value hand > 21 then true else false
+let is_busted (hand : card list) =
+  if player_value hand > 21 then true else false
 
 let rec hit hd =
   match hd with
   | [] -> if is_busted hd = false then hd else raise Empty
   | h :: t ->
       if is_busted hd = false && currentState = PLAYING then
-        List.cons h hd
+        Hand.hit h hd
       else hit []
