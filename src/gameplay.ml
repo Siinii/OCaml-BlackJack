@@ -15,14 +15,29 @@ exception NotCommand
 
 (* let start_game = failwith "Unimplemented" *)
 
+let og_deck = Deck.create_deck
+
+let shuffled = Deck.shuffle og_deck
+
+let card_one = Deck.deal_card shuffled
+
+let rem_deck = Deck.deal_left shuffled
+
+let card_two = Deck.deal_card rem_deck
+
+let rem_deck_second = Deck.deal_left rem_deck
+
+let card_three = Deck.deal_card rem_deck_second
+
+let rem_deck_third = Deck.deal_left rem_deck_second
+
+let card_four = Deck.deal_card rem_deck_third
+
 let give_cards =
-  let og_deck = Deck.create_deck in
-  let shuffled = Deck.shuffle og_deck in
-  let card_one = Deck.deal_card shuffled in
-  let rem_deck = Deck.deal_left shuffled in
-  let card_two = Deck.deal_card rem_deck in
   let hand = [ card_one; card_two ] in
   hand
+
+let ai_hand = [ card_three; card_four ]
 
 let hit_card hand = Hand.hit (Deck.deal_card hand)
 
@@ -61,6 +76,18 @@ let parse str =
   | "stand" -> Stand
   | _ -> raise NotCommand
 
+let rec ai_dealer_value cards =
+  match cards with
+  | [] -> failwith "Unimplemented"
+  | h :: t ->
+      let hit_hand =
+        Deck.add_card
+          (deal_card (shuffle (deck_no_hand cards create_deck)))
+          cards
+      in
+      if hand_value cards < 17 then ai_dealer_value hit_hand
+      else hand_value cards
+
 let rec use_command str (cards : card list) =
   let command = parse str in
   match command with
@@ -86,10 +113,14 @@ let rec use_command str (cards : card list) =
 
         ()
   | Stand ->
+      let dealer_val = ai_dealer_value ai_hand in
       let () =
         print_endline
           ("Your value is: " ^ string_of_int (hand_value cards));
-        print_endline "You win"
+        print_endline ("Dealer's value is: " ^ string_of_int dealer_val);
+        if dealer_val <= 21 && dealer_val > hand_value cards then
+          print_endline "You lose"
+        else print_endline "You win"
       in
       ()
 (* let make_move move = match move with | [] -> *)
