@@ -5,11 +5,11 @@ open Game.Player
 open Game.Types
 
 let play_game f =
-  print_endline ("Your hand is: " ^ hand_string give_cards);
+  print_endline ("Your hand is: " ^ hand_string give_init_cards);
   ANSITerminal.print_string [ ANSITerminal.white ]
     "Do you want to hit (h) or stand (s)?";
   match read_line () with
-  | hit -> use_command hit give_cards
+  | cmnd -> use_command cmnd give_init_cards
 
 (** [main ()] prompts for the game to play, then starts it. *)
 let main () =

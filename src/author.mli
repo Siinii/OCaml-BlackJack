@@ -10,7 +10,10 @@
 
 (** CS 3110 Fall 2021 Assignment A2 Adventure
 
-    @author Darren Lau (dl755) *)
+    @author Darren Lau (dl755)
+    @author Blaze Ezlakowski (be96)
+    @author Benjamin Lorence (brl73)
+    @author Ashraful Hassan (ah868) *)
 
 (************************************************************
 
