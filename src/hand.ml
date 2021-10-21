@@ -17,10 +17,10 @@ let value_of_card (c : card) =
   | { valu = Number x; _ } -> x
   | { valu = _; _ } -> 10
 
-let rec hand_value hand =
+let rec hand_total hand =
   match hand with
   | [] -> 0
-  | h :: t -> value_of_card h + hand_value t
+  | h :: t -> value_of_card h + hand_total t
 
 let to_list = Fun.id
 

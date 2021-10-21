@@ -1,0 +1,4 @@
+1. Type in the command "opam install ANSITerminal" in the base directory of this project.
+1. Type in the command "dune build" in the base directory of this project.
+2. type in the command "make play" in the base directory of this project.
+3. After you lose or win, to play again, simply type in "make play" again.

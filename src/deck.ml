@@ -21,10 +21,6 @@ let deal_left lst =
 
 let add_card = List.cons
 
-let peek = function
-  | [] -> raise Empty
-  | x :: _ -> x
-
 let size = List.length
 
 let to_list = Fun.id
@@ -66,7 +62,9 @@ let remove_card (card : card) (deck : card list) =
   | [] -> []
   | h :: t -> if h = card then t else h :: t
 
-let deck_no_hand hand deck =
+let rec deck_no_hand hand deck =
   match hand with
-  | [] -> empty
-  | h :: t -> if card_in_deck h deck then remove_card h deck else deck
+  | [] -> deck
+  | h :: t ->
+      if card_in_deck h deck then deck_no_hand t (remove_card h deck)
+      else deck
