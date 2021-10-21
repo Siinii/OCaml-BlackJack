@@ -21,10 +21,6 @@ let deal_left lst =
 
 let add_card = List.cons
 
-let peek = function
-  | [] -> raise Empty
-  | x :: _ -> x
-
 let size = List.length
 
 let to_list = Fun.id
