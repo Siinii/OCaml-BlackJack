@@ -47,9 +47,10 @@ let deck_tests =
       assert_equal (add_card card_one [ card_two ]) list_of_cards_test
     );
     ( "peek_test" >:: fun _ ->
-      assert_equal (peek list_of_cards_test) card_one );
+      assert_equal (deal_card list_of_cards_test) card_one );
     ( "peek_test_empty_list" >:: fun _ ->
-      assert_raises Game.Deck.Empty (fun () -> Game.Deck.peek []) );
+      assert_raises Game.Deck.Empty (fun () -> Game.Deck.deal_card [])
+    );
     ("size_test" >:: fun _ -> assert_equal (size list_of_cards_test) 2);
     ( "to_list_test" >:: fun _ ->
       assert_equal [ card_one; card_two ] list_of_cards_test );
@@ -69,7 +70,7 @@ let hand_tests =
         (hit card_three list_of_cards_test)
         [ card_three; card_one; card_two ] );
     ( "hand_value_test" >:: fun _ ->
-      assert_equal (hand_value deck_of_cards) 380 );
+      assert_equal (hand_total deck_of_cards) 380 );
   ]
 
 let suite =
