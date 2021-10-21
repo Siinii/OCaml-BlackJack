@@ -84,7 +84,7 @@ let parse str =
   | "stand" -> Stand
   | _ -> raise NotCommand
 
-let rec ai_dealer_total cards =
+let rec ai_dealer_final_hand cards =
   match cards with
   | [] -> failwith "Unimplemented"
   | h :: t ->
@@ -93,8 +93,8 @@ let rec ai_dealer_total cards =
           (deal_card (shuffle (deck_no_hand cards create_deck)))
           cards
       in
-      if Hand.hand_total cards < 17 then ai_dealer_total hit_hand
-      else hand_total cards
+      if Hand.hand_total cards < 17 then ai_dealer_final_hand hit_hand
+      else cards
 
 let rec use_command str (cards : card list) =
   let command = parse str in
@@ -124,12 +124,13 @@ let rec use_command str (cards : card list) =
 
         ()
   | Stand ->
-      let dealer_val = ai_dealer_total ai_init_hand in
+      let dealer_hand = ai_dealer_final_hand ai_init_hand in
+      let dealer_val = hand_total dealer_hand in
       let () =
         print_endline
           ("Your total is: " ^ string_of_int (hand_total cards));
         print_endline
-          ("The Dealer's hand is: " ^ hand_string ai_init_hand);
+          ("The Dealer's hand is: " ^ hand_string dealer_hand);
         print_endline ("Dealer's total is: " ^ string_of_int dealer_val);
         if dealer_val <= 21 && dealer_val > hand_total cards then
           print_endline "You lose"
