@@ -39,6 +39,7 @@ let give_cards =
 
 let ai_hand = [ card_three; card_four ]
 
+(* MUST FIX *)
 let hit_card hand = Hand.hit (Deck.deal_card hand)
 
 (* REMOVE LATER *)
