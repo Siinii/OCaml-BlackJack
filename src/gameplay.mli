@@ -30,10 +30,9 @@ val ai_init_hand : card list
     ai player (after the actual player is dealt his initital hand) from
     a shuffle deck*)
 
-val ai_dealer_total : card list -> int
-(** [ai_dealer_total hand] is the total value of all cards in the ai
-    dealer's hand [hand]. Ex:
-    [ai_dealer_total \[8 of Hearts, King of Spades\]] is 18*)
+val ai_dealer_final_hand : card list -> card list
+(** [ai_dealer_final_hand hand] is the final hand of the dealer, with
+    total value >=17, when given initial hand [hand] *)
 
 val use_command : string -> card list -> unit
 (** [use_command str hand] parses the string [str] and either hits or
