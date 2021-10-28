@@ -37,4 +37,5 @@ type game_state = {
   p2_earnings : int;
   p1_bet : int;
   p2_bet : int;
-}(** TODO: How to make this work with more than 2 players?*)
+}
+(** TODO: How to make this work with more than 2 players?*)
