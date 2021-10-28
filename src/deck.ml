@@ -49,6 +49,8 @@ let create_deck =
 let rand_int inte = Random.int inte
 
 let rec shuffle (deck : card list) =
+  (*This code was modifed from:
+    https://stackoverflow.com/questions/15095541/how-to-shuffle-list-in-on-in-ocaml *)
   Random.self_init ();
   let rand_deck = List.map (fun c -> (Random.bits (), c)) deck in
   let snd_deck = List.sort compare rand_deck in
