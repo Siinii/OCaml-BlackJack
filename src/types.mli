@@ -38,8 +38,4 @@ type game_state = {
   p1_bet : int;
   p2_bet : int;
 }
-<<<<<<< HEAD
 (** TODO: How to make this work with more than 2 players?*)
-=======
-(** TODO: How to make this work with more than 2 players?*)
->>>>>>> c33b87d69ab5f9b167d87d04c1ea58d13ce47086

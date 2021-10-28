@@ -2,6 +2,8 @@ open Deck
 open Hand
 open Types
 open Player
+open Gui
+open Graphics
 
 type input_phrase = string list
 
