@@ -10,10 +10,16 @@ open Graphics
 let card_pic =
   [ (160, 150); (240, 150); (240, 210); (160, 210) ] |> Array.of_list
 
+let () = set_window_title "Blackjack"
+
+let title1 = "The game is simple."
+
+let title2 = "First to 21 wins."
+
 let open_gui = open_graph ""
 
 let draw_card card =
-  set_color Graphics.magenta;
+  set_color Graphics.red;
   fill_poly card_pic
 
 let rec draw_hand hand =
@@ -40,7 +46,29 @@ let main () =
   print_string "> ";
 
   match read_line () with
-  | name -> play_game name
+  | name -> (
+      play_game name;
+
+      print_endline
+        "Do you want to play again? Type Yes to start a new game or no \
+         to quit.\n";
+      print_string "> ";
+
+      match read_line () with
+      | "no" ->
+          failwith "You have decided to not continute with the game."
+      | name -> (
+          play_game name;
+          print_endline
+            "Do you want to play again? Type Yes to start a new game \
+             or no to quit.\n";
+          print_string "> ";
+
+          match read_line () with
+          | "no" ->
+              failwith
+                "You have decided to not continute with the game."
+          | name -> play_game name))
 
 (* Execute the game engine. *)
 let () = main ()
