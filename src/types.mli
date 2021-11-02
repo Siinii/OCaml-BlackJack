@@ -27,6 +27,18 @@ type round =
   | Winner
   | End
 
+type winner_p1_or_dealer =
+  | Unknown
+  | Tie
+  | Player1
+  | Dealer
+
+type winner_p2_or_dealer =
+  | Unknown
+  | Tie
+  | Player2
+  | Dealer
+
 type game_state = {
   round : round;
   curr_deck : card list;
@@ -37,5 +49,7 @@ type game_state = {
   p2_earnings : int;
   p1_bet : int;
   p2_bet : int;
+  winner_p1_or_dealer : winner_p1_or_dealer;
+  winner_p2_or_dealer : winner_p2_or_dealer;
 }
 (** TODO: How to make this work with more than 2 players?*)

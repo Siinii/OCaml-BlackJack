@@ -3,40 +3,34 @@ open Game.Hand
 open Game.Gameplay
 open Game.Player
 open Game.Types
-open Game.Gui
-open Graphics
 
-(* GUI Section *)
-let card_pic =
-  [ (160, 150); (240, 150); (240, 210); (160, 210) ] |> Array.of_list
+(*open Game.Gui open Graphics
 
-let () = set_window_title "Blackjack"
+  (* GUI Section *) let card_pic = [ (160, 150); (240, 150); (240, 210);
+  (160, 210) ] |> Array.of_list
 
-let title1 = "The game is simple."
+  let () = set_window_title "Blackjack"
 
-let title2 = "First to 21 wins."
+  let title1 = "The game is simple."
 
-let open_gui = open_graph ""
+  let title2 = "First to 21 wins."
 
-let draw_card card =
-  set_color Graphics.red;
-  fill_poly card_pic
+  let open_gui = open_graph ""
 
-let rec draw_hand hand =
-  match hand with
-  | [] -> ()
-  | h :: t ->
-      draw_card h;
-      draw_hand t
+  let draw_card card = set_color Graphics.red; fill_poly card_pic
 
-(*GUI Section Done*)
-let play_game f =
-  print_endline ("Your hand is: " ^ hand_string give_init_cards);
-  draw_hand [ 1; 2 ];
+  let rec draw_hand hand = match hand with | [] -> () | h :: t ->
+  draw_card h; draw_hand t
+
+  (*GUI Section Done*) *)
+let rec play_game f =
+  (*print_endline ("Your hand is: " ^ hand_string give_init_cards);
+    draw_hand [ 1; 2 ]; *)
   ANSITerminal.print_string [ ANSITerminal.white ]
-    "Do you want to hit (h) or stand (s)?";
+    "Player 2, what is your name?";
+  print_string "> ";
   match read_line () with
-  | cmnd -> use_command cmnd give_init_cards
+  | cmnd -> new_state init_state cmnd
 
 (** [main ()] prompts for the game to play, then starts it. *)
 let main () =
@@ -46,29 +40,7 @@ let main () =
   print_string "> ";
 
   match read_line () with
-  | name -> (
-      play_game name;
-
-      print_endline
-        "Do you want to play again? Type Yes to start a new game or no \
-         to quit.\n";
-      print_string "> ";
-
-      match read_line () with
-      | "no" ->
-          failwith "You have decided to not continute with the game."
-      | name -> (
-          play_game name;
-          print_endline
-            "Do you want to play again? Type Yes to start a new game \
-             or no to quit.\n";
-          print_string "> ";
-
-          match read_line () with
-          | "no" ->
-              failwith
-                "You have decided to not continute with the game."
-          | name -> play_game name))
+  | name -> play_game name
 
 (* Execute the game engine. *)
 let () = main ()
