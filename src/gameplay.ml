@@ -262,71 +262,79 @@ let rec new_state (state : game_state) (command : string) : unit =
       new_state { state with round = Winner } "PlaceHolder"))
   else if state.round = Winner then (
     print_endline ("Dealer's hand is: " ^ hand_string state.dealer_hand);
-    if state.winner_p1_or_dealer = Unknown then (
-      if hand_total state.p1_hand > 21 then (
-        if hand_total state.dealer_hand <= 21 then (
+    if
+      state.winner_p1_or_dealer = Unknown
+      || state.winner_p2_or_dealer = Unknown
+    then (
+      if state.winner_p1_or_dealer = Unknown then (
+        if hand_total state.p1_hand > 21 then (
+          if hand_total state.dealer_hand <= 21 then (
+            print_endline
+              ("Player 1 has busted and loses $"
+              ^ string_of_int state.p1_bet);
+            new_state
+              {
+                state with
+                winner_p1_or_dealer = Dealer;
+                p1_earnings = state.p1_earnings - state.p1_bet;
+              }
+              "PlaceHolder")
+          else
+            print_endline
+              "Both the dealer and Player 1 have busted. It is a draw. \
+               Player 1 breaks even.";
+          new_state
+            { state with winner_p1_or_dealer = Tie }
+            "PlaceHolder")
+        else if
+          hand_total state.p1_hand > hand_total state.dealer_hand
+          || hand_total state.dealer_hand > 21
+        then (
           print_endline
-            ("Player 1 has busted and loses $"
+            ("Player 1 beats the dealer and gains $"
             ^ string_of_int state.p1_bet);
           new_state
             {
               state with
-              winner_p1_or_dealer = Dealer;
-              p1_earnings = state.p1_earnings - state.p1_bet;
+              winner_p1_or_dealer = Player1;
+              p1_earnings = state.p1_earnings + state.p1_bet;
             }
+            "PlaceHolder"))
+      else if state.winner_p2_or_dealer = Unknown then
+        if hand_total state.p2_hand > 21 then (
+          if hand_total state.dealer_hand <= 21 then (
+            print_endline
+              ("Player 2 has busted and loses $"
+              ^ string_of_int state.p2_bet);
+            new_state
+              {
+                state with
+                winner_p2_or_dealer = Dealer;
+                p2_earnings = state.p2_earnings - state.p2_bet;
+              }
+              "PlaceHolder")
+          else
+            print_endline
+              "Both the dealer and Player 2 have busted. It is a draw. \
+               Player 2 breaks even.";
+          new_state
+            { state with winner_p2_or_dealer = Tie }
             "PlaceHolder")
-        else
+        else if
+          hand_total state.p2_hand > hand_total state.dealer_hand
+          || hand_total state.dealer_hand > 21
+        then (
           print_endline
-            "Both the dealer and Player 1 have busted. It is a draw. \
-             Player 1 breaks even.";
-        new_state { state with winner_p1_or_dealer = Tie } "PlaceHolder")
-      else if
-        hand_total state.p1_hand > hand_total state.dealer_hand
-        || hand_total state.dealer_hand > 21
-      then (
-        print_endline
-          ("Player 1 beats the dealer and gains $"
-          ^ string_of_int state.p1_bet);
-        new_state
-          {
-            state with
-            winner_p1_or_dealer = Player1;
-            p1_earnings = state.p1_earnings + state.p1_bet;
-          }
-          "PlaceHolder"))
-    else if state.winner_p2_or_dealer = Unknown then
-      if hand_total state.p2_hand > 21 then (
-        if hand_total state.dealer_hand <= 21 then (
-          print_endline
-            ("Player 2 has busted and loses $"
+            ("Player 2 beats the dealer and gains $"
             ^ string_of_int state.p2_bet);
           new_state
             {
               state with
-              winner_p2_or_dealer = Dealer;
-              p2_earnings = state.p2_earnings - state.p2_bet;
+              winner_p2_or_dealer = Player2;
+              p2_earnings = state.p2_earnings + state.p2_bet;
             }
-            "PlaceHolder")
-        else
-          print_endline
-            "Both the dealer and Player 2 have busted. It is a draw. \
-             Player 2 breaks even.";
-        new_state { state with winner_p2_or_dealer = Tie } "PlaceHolder")
-      else if
-        hand_total state.p2_hand > hand_total state.dealer_hand
-        || hand_total state.dealer_hand > 21
-      then (
-        print_endline
-          ("Player 2 beats the dealer and gains $"
-          ^ string_of_int state.p2_bet);
-        new_state
-          {
-            state with
-            winner_p2_or_dealer = Player2;
-            p2_earnings = state.p2_earnings + state.p2_bet;
-          }
-          "PlaceHolder")
-      else new_state { state with round = End } "PlaceHolder")
+            "PlaceHolder"))
+    else new_state { state with round = End } "PlaceHolder")
   else if state.round = End then (
     print_endline
       ("Player 1's earnings are: $ " ^ string_of_int state.p1_earnings);
