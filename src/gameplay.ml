@@ -137,6 +137,14 @@ let bet_from_parse move =
   | Bet x -> x
   | _ -> 0
 
+let stuff (state : game_state) (command : string) new_state =
+  print_endline
+    ("Player 1 bet $" ^ string_of_int (bet_from_parse (parse command)));
+  print_endline "Now cards will be dealt: ";
+  new_state
+    { state with round = Deal; p2_bet = bet_from_parse (parse command) }
+    "PlaceHolder"
+
 let rec new_state (state : game_state) (command : string) : unit =
   if state.round = Start then (
     print_endline "A new round is starting:";
@@ -161,17 +169,7 @@ let rec new_state (state : game_state) (command : string) : unit =
             p1_bet = bet_from_parse (parse command);
           }
           cmnd)
-  else if state.round = P2_bet then (
-    print_endline
-      ("Player 1 bet $" ^ string_of_int (bet_from_parse (parse command)));
-    print_endline "Now cards will be dealt: ";
-    new_state
-      {
-        state with
-        round = Deal;
-        p2_bet = bet_from_parse (parse command);
-      }
-      "PlaceHolder")
+  else if state.round = P2_bet then stuff state command new_state
   else if state.round = Deal then
     let first_hand = give_init_cards in
     let second_hand = ai_init_hand in
