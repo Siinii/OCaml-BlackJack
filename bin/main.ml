@@ -27,7 +27,8 @@ let rec play_game f =
   (*print_endline ("Your hand is: " ^ hand_string give_init_cards);
     draw_hand [ 1; 2 ]; *)
   ANSITerminal.print_string [ ANSITerminal.white ]
-    "Player 2, what is your name?";
+    "Player 2: enter your name";
+  print_endline "";
   print_string "> ";
   match read_line () with
   | cmnd -> new_state init_state cmnd
@@ -36,7 +37,7 @@ let rec play_game f =
 let main () =
   ANSITerminal.print_string [ ANSITerminal.white ]
     "\n\nWelcome to Blackjack!\n";
-  print_endline "Please enter your name.\n";
+  print_endline "Player 1: enter your name.\n";
   print_string "> ";
 
   match read_line () with
