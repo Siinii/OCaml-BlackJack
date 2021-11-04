@@ -141,10 +141,9 @@ let bet_from_parse move =
   | Bet x -> x
   | _ -> 0
 
-let rec new_state (state : game_state) (command : string) : unit =
-  (*START OF ROUND, PLAYER 1 ENTERS BET*)
-  if state.round = Start then (
-    print_endline "A new round is starting:";
+
+let player1_init_bet (state : game_state) (new_state)= 
+  print_endline "A new round is starting:";
     print_endline ("Player 1 has $" ^ string_of_int state.p1_earnings);
     print_endline ("Player 2 has $" ^ string_of_int state.p2_earnings);
 
@@ -166,10 +165,10 @@ let rec new_state (state : game_state) (command : string) : unit =
           "You have entered an illegal bet amount. Please try again";
         new_state
           { state with p1_bet = bet_from_parse (parse cmnd) }
-          "PlaceHolder"
-    (*AFTER P1 BETS, PLAYER 2 ENTERS BET*))
-  else if state.round = P1_bet then (
-    print_endline ("Player 1 bet $" ^ string_of_int state.p1_bet);
+          "PlaceHolder" 
+
+let player2_init_bet (state : game_state) (command : string) (new_state) = 
+  print_endline ("Player 1 bet $" ^ string_of_int state.p1_bet);
     print_endline "Player 2: Please enter your bet:";
     print_string "> ";
     match read_line () with
@@ -184,32 +183,10 @@ let rec new_state (state : game_state) (command : string) : unit =
             round = P2_bet;
             p1_bet = bet_from_parse (parse command);
           }
-          cmnd)
-  else if state.round = P2_bet then (print_endline
-    ("Player 1 bet $" ^ string_of_int (bet_from_parse (parse command)));
-  print_endline "Now cards will be dealt: ";
-  new_state
-    { state with round = Deal; p2_bet = bet_from_parse (parse command) }
-    "PlaceHolder")
-  else if state.round = Deal then
-    let first_hand = give_init_cards in
-    let second_hand = ai_init_hand in
-    let dealers_hand = [ card_n 5; card_n 6 ] in
-    let remaining_deck = rem_deck_nth 6 in
-    new_state
-      {
-        state with
-        round = P1_hit;
-        p1_hand = first_hand;
-        p2_hand = second_hand;
-        dealer_hand = dealers_hand;
-        curr_deck = remaining_deck;
-      }
-      "PlaceHolder"
-    (*AFTER CARDS ARE DEALT, PLAYER 1 IS CONTINUALLY ASKED TO HIT UNTIL
-      THEY STAND*)
-  else if state.round = P1_hit then (
-    print_endline ("Player 1's hand is: " ^ hand_string state.p1_hand);
+          cmnd
+
+let player_1_move (state : game_state) (new_state) = 
+  print_endline ("Player 1's hand is: " ^ hand_string state.p1_hand);
     print_endline ("Player 2's hand is: " ^ hand_string state.p2_hand);
     print_endline
       ("Dealer's top card is:  "
@@ -238,42 +215,41 @@ let rec new_state (state : game_state) (command : string) : unit =
           new_state { state with round = P2_hit } "PlaceHolder"
       | cmnd ->
           print_endline "Invalid Command; try again.";
-          new_state state "PlaceHolder"
-      (*AFTER PLAYER 1 STANDS, PLAYER 2 IS CONTINUALLY ASKED TO HIT
-        UNTIL THEY STAND*)))
-  else if state.round = P2_hit then (
-    print_endline ("Player 1's hand is: " ^ hand_string state.p1_hand);
-    print_endline ("Player 2's hand is: " ^ hand_string state.p2_hand);
-    print_endline
-      ("Dealer's top card is:  "
-      ^ card_to_string (Deck.deal_card state.dealer_hand));
-    if hand_total state.p2_hand > 21 then (
-      print_endline "Player 2 has busted!";
-      new_state { state with round = Dealer_hit } "PlaceHolder")
-    else (
-      print_endline "Player 2: Would you like to hit (h) or stand (s)?";
-      print_string "> ";
-      match read_line () with
-      | cmnd when parse cmnd = Hit ->
-          let first_hand =
-            state.p2_hand @ [ Deck.deal_card state.curr_deck ]
-          in
-          new_state
-            {
-              state with
-              p2_hand = first_hand;
-              curr_deck = Deck.deal_left state.curr_deck;
-            }
-            "PlaceHolder"
-      | cmnd when parse cmnd = Stand ->
-          new_state { state with round = Dealer_hit } "PlaceHolder"
-      | cmnd ->
-          print_endline "Invalid Command; try again.";
-          new_state state "PlaceHolder"
-      (*AFTER BOTH PLAYERS CHOOSE TO STAND, THE DEALER HITS UNTIL THEY
-        REACH VALUE OF 17*)))
-  else if state.round = Dealer_hit then (
-    print_endline "Dealer's turn to hit or stand";
+          new_state state "PlaceHolder")
+
+let player_2_move (state : game_state) (new_state) =
+  
+  print_endline ("Player 1's hand is: " ^ hand_string state.p1_hand);
+  print_endline ("Player 2's hand is: " ^ hand_string state.p2_hand);
+  print_endline
+    ("Dealer's top card is:  "
+    ^ card_to_string (Deck.deal_card state.dealer_hand));
+  if hand_total state.p2_hand > 21 then (
+    print_endline "Player 2 has busted!";
+    new_state { state with round = Dealer_hit } "PlaceHolder")
+  else (
+    print_endline "Player 2: Would you like to hit (h) or stand (s)?";
+    print_string "> ";
+    match read_line () with
+    | cmnd when parse cmnd = Hit ->
+        let first_hand =
+          state.p2_hand @ [ Deck.deal_card state.curr_deck ]
+        in
+        new_state
+          {
+            state with
+            p2_hand = first_hand;
+            curr_deck = Deck.deal_left state.curr_deck;
+          }
+          "PlaceHolder"
+    | cmnd when parse cmnd = Stand ->
+        new_state { state with round = Dealer_hit } "PlaceHolder"
+    | cmnd ->
+        print_endline "Invalid Command; try again.";
+        new_state state "PlaceHolder")
+
+let dealer_move (state:game_state) (new_state) =
+  print_endline "Dealer's turn to hit or stand";
     if hand_total state.dealer_hand <= 17 then (
       print_endline "Dealer hits";
       new_state
@@ -286,53 +262,20 @@ let rec new_state (state : game_state) (command : string) : unit =
         "PlaceHolder")
     else (
       print_endline "Dealer Stands";
-      new_state { state with round = Winner } "PlaceHolder"
-      (*AFTER ALL PLAYERS AND DEALER STANDS, WINNER IS DETERMINED*)))
-  else if state.round = Winner then
-    if
-      state.winner_p1_or_dealer = Unknown
-      || state.winner_p2_or_dealer = Unknown
-    then (
-      print_endline
-        ("Dealer's hand is: " ^ hand_string state.dealer_hand);
-      if state.winner_p1_or_dealer = Unknown then (
-        if hand_total state.p1_hand > 21 then (
-          if hand_total state.dealer_hand <= 21 then (
-            print_endline
-              ("Player 1 has busted and loses $"
-              ^ string_of_int state.p1_bet);
-            new_state
-              {
-                state with
-                winner_p1_or_dealer = Dealer;
-                p1_earnings = state.p1_earnings - state.p1_bet;
-              }
-              "PlaceHolder")
-          else
-            print_endline
-              "Both the dealer and Player 1 have busted. It is a draw. \
-               Player 1 breaks even.";
-          new_state
-            { state with winner_p1_or_dealer = Tie }
-            "PlaceHolder")
-        else if
-          hand_total state.p1_hand > hand_total state.dealer_hand
-          || hand_total state.dealer_hand > 21
-        then (
+      new_state { state with round = Winner } "PlaceHolder")
+
+let determine_winner (state : game_state) (new_state) =
+  if
+    state.winner_p1_or_dealer = Unknown
+    || state.winner_p2_or_dealer = Unknown
+  then (
+    print_endline
+      ("Dealer's hand is: " ^ hand_string state.dealer_hand);
+    if state.winner_p1_or_dealer = Unknown then (
+      if hand_total state.p1_hand > 21 then (
+        if hand_total state.dealer_hand <= 21 then (
           print_endline
-            ("Player 1 beats the dealer and gains $"
-            ^ string_of_int state.p1_bet);
-          new_state
-            {
-              state with
-              winner_p1_or_dealer = Player1;
-              p1_earnings = state.p1_earnings + state.p1_bet;
-            }
-            "PlaceHolder")
-        else if hand_total state.p1_hand < hand_total state.dealer_hand
-        then (
-          print_endline
-            ("Player 1 loses to the dealer and loses $"
+            ("Player 1 has busted and loses $"
             ^ string_of_int state.p1_bet);
           new_state
             {
@@ -343,46 +286,46 @@ let rec new_state (state : game_state) (command : string) : unit =
             "PlaceHolder")
         else
           print_endline
-            "Player 1 and the dealer draw. Player 1 breaks even";
-        new_state { state with winner_p1_or_dealer = Tie } "PlaceHolder")
-      else if state.winner_p2_or_dealer = Unknown then
-        if hand_total state.p2_hand > 21 then (
-          if hand_total state.dealer_hand <= 21 then (
-            print_endline
-              ("Player 2 has busted and loses $"
-              ^ string_of_int state.p2_bet);
-            new_state
-              {
-                state with
-                winner_p2_or_dealer = Dealer;
-                p2_earnings = state.p2_earnings - state.p2_bet;
-              }
-              "PlaceHolder")
-          else
-            print_endline
-              "Both the dealer and Player 2 have busted. It is a draw. \
-               Player 2 breaks even.";
-          new_state
-            { state with winner_p2_or_dealer = Tie }
-            "PlaceHolder")
-        else if
-          hand_total state.p2_hand > hand_total state.dealer_hand
-          || hand_total state.dealer_hand > 21
-        then (
+            "Both the dealer and Player 1 have busted. It is a draw. \
+             Player 1 breaks even.";
+        new_state
+          { state with winner_p1_or_dealer = Tie }
+          "PlaceHolder")
+      else if
+        hand_total state.p1_hand > hand_total state.dealer_hand
+        || hand_total state.dealer_hand > 21
+      then (
+        print_endline
+          ("Player 1 beats the dealer and gains $"
+          ^ string_of_int state.p1_bet);
+        new_state
+          {
+            state with
+            winner_p1_or_dealer = Player1;
+            p1_earnings = state.p1_earnings + state.p1_bet;
+          }
+          "PlaceHolder")
+      else if hand_total state.p1_hand < hand_total state.dealer_hand
+      then (
+        print_endline
+          ("Player 1 loses to the dealer and loses $"
+          ^ string_of_int state.p1_bet);
+        new_state
+          {
+            state with
+            winner_p1_or_dealer = Dealer;
+            p1_earnings = state.p1_earnings - state.p1_bet;
+          }
+          "PlaceHolder")
+      else
+        print_endline
+          "Player 1 and the dealer draw. Player 1 breaks even";
+      new_state { state with winner_p1_or_dealer = Tie } "PlaceHolder")
+    else if state.winner_p2_or_dealer = Unknown then
+      if hand_total state.p2_hand > 21 then (
+        if hand_total state.dealer_hand <= 21 then (
           print_endline
-            ("Player 2 beats the dealer and gains $"
-            ^ string_of_int state.p2_bet);
-          new_state
-            {
-              state with
-              winner_p2_or_dealer = Player2;
-              p2_earnings = state.p2_earnings + state.p2_bet;
-            }
-            "PlaceHolder")
-        else if hand_total state.p2_hand < hand_total state.dealer_hand
-        then (
-          print_endline
-            ("Player 2 loses to the dealer and loses $"
+            ("Player 2 has busted and loses $"
             ^ string_of_int state.p2_bet);
           new_state
             {
@@ -393,13 +336,45 @@ let rec new_state (state : game_state) (command : string) : unit =
             "PlaceHolder")
         else
           print_endline
-            "Player 2 and the dealer draw. Player 2 breaks even";
-      new_state { state with winner_p2_or_dealer = Tie } "PlaceHolder")
-    else new_state { state with round = End } "PlaceHolder"
-      (*AFTER WINNER IS DETERMINED, PLAYER EARNINGS ARE POSTED AND USER
-        IS PROMPTED TO PLAY AGAIN*)
-  else if state.round = End then (
-    print_endline
+            "Both the dealer and Player 2 have busted. It is a draw. \
+             Player 2 breaks even.";
+        new_state
+          { state with winner_p2_or_dealer = Tie }
+          "PlaceHolder")
+      else if
+        hand_total state.p2_hand > hand_total state.dealer_hand
+        || hand_total state.dealer_hand > 21
+      then (
+        print_endline
+          ("Player 2 beats the dealer and gains $"
+          ^ string_of_int state.p2_bet);
+        new_state
+          {
+            state with
+            winner_p2_or_dealer = Player2;
+            p2_earnings = state.p2_earnings + state.p2_bet;
+          }
+          "PlaceHolder")
+      else if hand_total state.p2_hand < hand_total state.dealer_hand
+      then (
+        print_endline
+          ("Player 2 loses to the dealer and loses $"
+          ^ string_of_int state.p2_bet);
+        new_state
+          {
+            state with
+            winner_p2_or_dealer = Dealer;
+            p2_earnings = state.p2_earnings - state.p2_bet;
+          }
+          "PlaceHolder")
+      else
+        print_endline
+          "Player 2 and the dealer draw. Player 2 breaks even";
+    new_state { state with winner_p2_or_dealer = Tie } "PlaceHolder")
+  else new_state { state with round = End } "PlaceHolder"
+
+let earnings_and_replay (state : game_state) (new_state) =
+  print_endline
       ("Player 1's earnings are: $ " ^ string_of_int state.p1_earnings);
     print_endline
       ("Player 2's earnings are: $" ^ string_of_int state.p2_earnings);
@@ -432,4 +407,53 @@ let rec new_state (state : game_state) (command : string) : unit =
         exit 0
     | _ ->
         print_endline "GoodBye!";
-        exit 0)
+        exit 0
+
+let rec new_state (state : game_state) (command : string) : unit =
+  (*START OF ROUND, PLAYER 1 ENTERS BET*)
+  if state.round = Start then (
+    player1_init_bet state new_state
+    (*AFTER P1 BETS, PLAYER 2 ENTERS BET*))
+  else if state.round = P1_bet then (
+    player2_init_bet state command new_state
+    )
+  else if state.round = P2_bet then (print_endline
+    ("Player 1 bet $" ^ string_of_int (bet_from_parse (parse command)));
+  print_endline "Now cards will be dealt: ";
+  new_state
+    { state with round = Deal; p2_bet = bet_from_parse (parse command) }
+    "PlaceHolder")
+  else if state.round = Deal then
+    let first_hand = give_init_cards in
+    let second_hand = ai_init_hand in
+    let dealers_hand = [ card_n 5; card_n 6 ] in
+    let remaining_deck = rem_deck_nth 6 in
+    new_state
+      {
+        state with
+        round = P1_hit;
+        p1_hand = first_hand;
+        p2_hand = second_hand;
+        dealer_hand = dealers_hand;
+        curr_deck = remaining_deck;
+      }
+      "PlaceHolder"
+    (*AFTER CARDS ARE DEALT, PLAYER 1 IS CONTINUALLY ASKED TO HIT UNTIL
+      THEY STAND*)
+  else if state.round = P1_hit then (
+      player_1_move state new_state
+      (*AFTER PLAYER 1 STANDS, PLAYER 2 IS CONTINUALLY ASKED TO HIT
+        UNTIL THEY STAND*))
+  else if state.round = P2_hit then (
+      player_2_move state new_state
+      (*AFTER BOTH PLAYERS CHOOSE TO STAND, THE DEALER HITS UNTIL THEY
+        REACH VALUE OF 17*))
+  else if state.round = Dealer_hit then (
+      dealer_move state new_state
+      (*AFTER ALL PLAYERS AND DEALER STANDS, WINNER IS DETERMINED*))
+  else if state.round = Winner then
+    determine_winner state new_state
+      (*AFTER WINNER IS DETERMINED, PLAYER EARNINGS ARE POSTED AND USER
+        IS PROMPTED TO PLAY AGAIN*)
+  else if state.round = End then (
+    earnings_and_replay state new_state)
