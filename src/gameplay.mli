@@ -5,9 +5,15 @@ open Player
 
 type input_phrase = string list
 
+val init_state : game_state
+
+val new_state : game_state -> string -> unit
+
 type move =
   | Hit
   | Stand
+  | Bet of int
+  | PlaceHolder
 
 exception NotCommand
 
@@ -30,14 +36,14 @@ val ai_init_hand : card list
     ai player (after the actual player is dealt his initital hand) from
     a shuffle deck*)
 
-val ai_dealer_final_hand : card list -> card list
-(** [ai_dealer_final_hand hand] is the final hand of the dealer, with
-    total value >=17, when given initial hand [hand] *)
+(* val ai_dealer_final_hand : card list -> card list (**
+   [ai_dealer_final_hand hand] is the final hand of the dealer, with
+   total value >=17, when given initial hand [hand] *)
 
-val use_command : string -> card list -> unit
-(** [use_command str hand] parses the string [str] and either hits or
-    stands onto the hand [hand] depending on the string given. Raises
-    [NotCommand] if an invalid command string is passed in.*)
+   val use_command : string -> card list -> unit (** [use_command str
+   hand] parses the string [str] and either hits or stands onto the hand
+   [hand] depending on the string given. Raises [NotCommand] if an
+   invalid command string is passed in.*) *)
 
 val hand_string : card list -> string
 (** [hand_string hand] is the string representation of the card list
