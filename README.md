@@ -1,13 +1,19 @@
 # OCaml-BlackJack
 
 Fully functional BlackJack simulator written in the functional programming language, OCaml. Created as a project for Cornell University's Functional Programming Class, CS3110.
-Features:
+
+**Features**:
+ 
  -Customizable number of real players, including a Dealer AI.
+ 
  -Multi-round games
+ 
  -Betting system
  
- Contributors:
  
+ 
+**Contributors:**
+
   -Blaze Ezlakowski, be96
  
   -Ashraful Hassan: ah868
